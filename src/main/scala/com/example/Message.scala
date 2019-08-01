@@ -11,7 +11,11 @@ object Message {
   sealed trait AdminMessage extends Message
 
   object AdminMessage {
-    case class Save(value: String, replyTo: ActorRef[Done]) extends AdminMessage
+    case class Save(replyTo: ActorRef[Done], value: String) extends AdminMessage
+    object Save {
+      def apply(value: String)(replyTo: ActorRef[Done]): Save =
+        new Save(replyTo, value)
+    }
   }
 
   sealed trait ClientMessage extends Message
