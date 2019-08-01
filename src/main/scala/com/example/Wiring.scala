@@ -6,7 +6,6 @@ import akka.actor.typed.scaladsl.adapter.TypedActorSystemOps
 import akka.actor.typed.{ActorRef, ActorSystem, Scheduler}
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
-import com.example.Actors.writeBeh
 
 import scala.concurrent.Future
 import scala.concurrent.duration.DurationLong
@@ -19,5 +18,5 @@ object Wiring {
   implicit lazy val mat: ActorMaterializer = ActorMaterializer()
   implicit lazy val sch: Scheduler = system.scheduler
   implicit lazy val actorRef: Future[ActorRef[Message]] =
-    system.systemActorOf(writeBeh(""), "actor1")
+    system.systemActorOf(Actors.writeBeh(""), "actor1")
 }
