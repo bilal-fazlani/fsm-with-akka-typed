@@ -15,7 +15,7 @@ object Actors {
 
   def writeBeh(state: String): Behavior[Message] =
     Behaviors.receiveMessagePartial[Message] {
-      case Save(value, replyTo) =>
-        replyTo ! Done; readonly(value)
+      case Save(replyTo, data) =>
+        replyTo ! Done; readonly(data)
     }
 }
