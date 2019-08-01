@@ -10,6 +10,6 @@ GET http://localhost:8080/
 
 ###
 
-POST http://localhost:8080/?data=abc
+POST http://localhost:8080/?data=pqr
 
 ###
