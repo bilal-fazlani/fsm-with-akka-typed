@@ -7,32 +7,33 @@ import com.example.Message.WriteBehaviorMessage.{Clear, Save}
 import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
+import scala.reflect.ClassTag
+
+
 object Actors {
+  def read(state: String): Behavior[Message] = myReceive[ReadBehaviorMessage] {
+    case Read(replyTo) =>
+      replyTo ! Data(state)
+      write(state)
+  }
 
-  val unhandled: Behavior[Message[Response]] =
-    Behaviors.receiveMessage[Message[Response]] { x =>
-      // this cast is ok, given the domain knowledge that only _ <: Response can only be Unhandled if it reaches here
-      x.replyTo.asInstanceOf[ActorRef[Unhandled.type]] ! Unhandled
-      Behaviors.same
+  def write(state: String): Behavior[Message] = myReceive[WriteBehaviorMessage] {
+    case Save(replyTo, value) =>
+      replyTo ! Ok
+      read(value)
+    case Clear(replyTo) =>
+      replyTo ! Ok
+      read("")
+  }
+
+  def unhandled(m: Message): Behavior[Message] = {
+    m.replyTo ! Unhandled
+    Behaviors.same
+  }
+
+  private def myReceive[B <: Message: ClassTag](f: B => Behavior[Message]) =
+    Behaviors.receiveMessage[Message] { x =>
+      if (scala.reflect.classTag[B].runtimeClass.isInstance(x)) f(x.asInstanceOf[B])
+      else unhandled(x)
     }
-
-  def read(state: String): Behavior[Message[Response]] = {
-    Behaviors.receiveMessagePartial[Message[Response]] {
-      case Read(replyTo) =>
-        replyTo ! Data(state)
-        write(state)
-    }
-  }.orElse(unhandled)
-
-  def write(state: String): Behavior[Message[Response]] = {
-    Behaviors.receiveMessagePartial[Message[Response]] {
-      case Save(replyTo, value) =>
-        replyTo ! Ok
-        read(value)
-
-      case Clear(replyTo) =>
-        replyTo ! Ok
-        read("")
-    }
-  }.orElse(unhandled)
 }
