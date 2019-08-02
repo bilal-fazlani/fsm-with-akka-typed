@@ -9,11 +9,11 @@ import akka.util.ByteString
 import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
-import scala.util.Success
 import scala.util.control.NonFatal
+import scala.util.{Failure, Success}
 
 trait Routes extends Directives {
-  val exceptionHandler: ExceptionHandler = ExceptionHandler({
+  private val exceptionHandler: ExceptionHandler = ExceptionHandler({
     case _: TimeoutException =>
       complete(HttpResponse(StatusCodes.GatewayTimeout))
     case NonFatal(err) =>
@@ -40,12 +40,14 @@ trait Routes extends Directives {
           case Success(Data(value)) => complete(value)
           case Success(Unhandled) =>
             complete(HttpResponse(StatusCodes.BadRequest))
+          case Failure(exception) => throw exception
         }
       } ~ (post & parameter('data)) { data =>
         onComplete(proxy.write(data)) {
           case Success(Ok) => complete("")
           case Success(Unhandled) =>
             complete(HttpResponse(StatusCodes.BadRequest))
+          case Failure(exception) => throw exception
         }
       }
     }

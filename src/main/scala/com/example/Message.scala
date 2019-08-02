@@ -13,10 +13,8 @@ object Message {
     case class Save(replyTo: ActorRef[SaveResponse], value: String)
         extends WriteBehaviorMessage
 
-    object Save {
-      def apply(value: String)(replyTo: ActorRef[SaveResponse]): Save =
-        new Save(replyTo, value)
-    }
+    case class Clear(replyTo: ActorRef[SaveResponse])
+        extends WriteBehaviorMessage
   }
 
   sealed trait ReadBehaviorMessage extends Message[ReadResponse]

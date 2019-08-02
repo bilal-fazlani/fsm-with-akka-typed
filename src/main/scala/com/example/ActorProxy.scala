@@ -18,5 +18,5 @@ class ActorProxy(actorRef: ActorRef[Message[Response]])(
       .ask[ReadResponse](r => Read(r).asInstanceOf[Message[Response]])
 
   def write(data: String): Future[SaveResponse] =
-    actorRef ? (Save(data)(_).asInstanceOf[Message[Response]])
+    actorRef ? (Save(_, data).asInstanceOf[Message[Response]])
 }
