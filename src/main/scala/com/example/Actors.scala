@@ -1,38 +1,38 @@
 package com.example
 
+import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.{ActorRef, Behavior}
+import com.example.Message.{ReadBehaviorMessage, WriteBehaviorMessage}
 import com.example.Message.ReadBehaviorMessage.Read
 import com.example.Message.WriteBehaviorMessage.{Clear, Save}
 import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
+import scala.reflect.ClassTag
+
 object Actors {
+  def read(state: String): Behavior[Message] = myReceive[ReadBehaviorMessage] {
+    case Read(replyTo) =>
+      replyTo ! Data(state)
+      write(state)
+  }
 
-  val unhandled: Behavior[Message[Response]] =
-    Behaviors.receiveMessage[Message[Response]] { x =>
-      // this cast is ok, given the domain knowledge that only _ <: Response can only be Unhandled if it reaches here
-      x.replyTo.asInstanceOf[ActorRef[Unhandled.type]] ! Unhandled
-      Behaviors.same
-    }
+  def write(state: String): Behavior[Message] = myReceive[WriteBehaviorMessage] {
+    case Save(replyTo, value) =>
+      replyTo ! Ok
+      read(value)
+    case Clear(replyTo) =>
+      replyTo ! Ok
+      read("")
+  }
 
-  def read(state: String): Behavior[Message[Response]] = {
-    Behaviors.receiveMessagePartial[Message[Response]] {
-      case Read(replyTo) =>
-        replyTo ! Data(state)
-        write(state)
-    }
-  }.orElse(unhandled)
+  def unhandled(m: Message): Behavior[Message] = {
+    m.replyTo ! Unhandled
+    Behaviors.same
+  }
 
-  def write(state: String): Behavior[Message[Response]] = {
-    Behaviors.receiveMessagePartial[Message[Response]] {
-      case Save(replyTo, value) =>
-        replyTo ! Ok
-        read(value)
-
-      case Clear(replyTo) =>
-        replyTo ! Ok
-        read("")
-    }
-  }.orElse(unhandled)
+  private def myReceive[B <: Message: ClassTag](f: B => Behavior[Message]): Behavior[Message] = Behaviors.receiveMessage {
+    case m: B => f(m)
+    case m    => unhandled(m)
+  }
 }
