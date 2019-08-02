@@ -9,33 +9,33 @@ sealed trait Message {
 
 object Message {
   sealed trait WriteBehaviorMessage extends Message {
-    type T = SaveResponse
+    type T = WriteBehaviorResponse
   }
   object WriteBehaviorMessage {
-    case class Save(replyTo: ActorRef[SaveResponse], value: String) extends WriteBehaviorMessage
+    case class Save(replyTo: ActorRef[WriteBehaviorResponse], value: String) extends WriteBehaviorMessage
     object Save {
-      def apply(value: String)(replyTo: ActorRef[SaveResponse]): Save = new Save(replyTo, value)
+      def apply(value: String)(replyTo: ActorRef[WriteBehaviorResponse]): Save = new Save(replyTo, value)
     }
-    case class Clear(replyTo: ActorRef[SaveResponse]) extends WriteBehaviorMessage
+    case class Clear(replyTo: ActorRef[WriteBehaviorResponse]) extends WriteBehaviorMessage
   }
 
   sealed trait ReadBehaviorMessage extends Message {
-    type T = ReadResponse
+    type T = ReadBehaviorResponse
   }
   object ReadBehaviorMessage {
-    case class Read(replyTo: ActorRef[ReadResponse]) extends ReadBehaviorMessage
+    case class Read(replyTo: ActorRef[ReadBehaviorResponse]) extends ReadBehaviorMessage
   }
 }
 
 sealed trait Response
-sealed trait SaveResponse extends Response
-sealed trait ReadResponse extends Response
-case object Unhandled     extends ReadResponse with SaveResponse
+sealed trait WriteBehaviorResponse extends Response
+sealed trait ReadBehaviorResponse  extends Response
+case object Unhandled              extends ReadBehaviorResponse with WriteBehaviorResponse
 
-object SaveResponse {
-  case object Ok extends SaveResponse
+object WriteBehaviorResponse {
+  case object Ok extends WriteBehaviorResponse
 }
 
-object ReadResponse {
-  case class Data(value: String) extends ReadResponse
+object ReadBehaviorResponse {
+  case class Data(value: String) extends ReadBehaviorResponse
 }

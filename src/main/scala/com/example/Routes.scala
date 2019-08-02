@@ -3,14 +3,14 @@ package com.example
 import java.util.concurrent.TimeoutException
 
 import akka.http.scaladsl.model.HttpEntity.Strict
-import akka.http.scaladsl.model.{ ContentTypes, HttpResponse, StatusCodes }
-import akka.http.scaladsl.server.{ Directives, ExceptionHandler, Route }
+import akka.http.scaladsl.model.{ContentTypes, HttpResponse, StatusCodes}
+import akka.http.scaladsl.server.{Directives, ExceptionHandler, Route}
 import akka.util.ByteString
-import com.example.ReadResponse.Data
-import com.example.SaveResponse.Ok
+import com.example.ReadBehaviorResponse.Data
+import com.example.WriteBehaviorResponse.Ok
 
 import scala.util.control.NonFatal
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
 trait Routes extends Directives {
   private val exceptionHandler: ExceptionHandler = ExceptionHandler({
@@ -26,7 +26,11 @@ trait Routes extends Directives {
               (err.getMessage :: "" :: err.getStackTrace
                 .map(x => x.toString)
                 .toList)
-                .mkString("\n")))))
+                .mkString("\n")
+            )
+          )
+        )
+      )
   })
 
   def makeRoutes(proxy: ActorProxy): Route = {
@@ -39,14 +43,14 @@ trait Routes extends Directives {
           case Failure(exception) => throw exception
         }
       } ~
-        (post & parameter('data)) { data =>
-          onComplete(proxy.write(data)) {
-            case Success(Ok) => complete("")
-            case Success(Unhandled) =>
-              complete(HttpResponse(StatusCodes.BadRequest))
-            case Failure(exception) => throw exception
-          }
+      (post & parameter('data)) { data =>
+        onComplete(proxy.write(data)) {
+          case Success(Ok) => complete("")
+          case Success(Unhandled) =>
+            complete(HttpResponse(StatusCodes.BadRequest))
+          case Failure(exception) => throw exception
         }
+      }
     }
   }
 }

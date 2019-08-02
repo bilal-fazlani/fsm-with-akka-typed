@@ -23,35 +23,31 @@ return BAD REQUEST. Once you read the data, it will then again go into `writeonl
 
 To achieve this functionality, akka-typed actors are used.
 
-## Akka Actor Behaviors
+## Pattern
+
+The pattern requires us to come up with a list of states.
+Each state will have a corresponding akka `behavior`.
 
 ![image](images/Behaviors.png)
 
-Source: [Actors.scala](/src/main/scala/com/example/Actors.scala)
-
-## Akka Input Messages
+In addition the pattern requires that we create an ADT of messages for every
+state of the state machine. Since we are using typed-actors,
+we can then use `Behavior.receive[ADT]`.
+This allows us to ensure that we handle all messages which are
+applicable to state of machine. If any message is missed,
+a compiler warning is generated. In order to prevent `ask pattern`
+from timing out, when a message is not handled, we need to ensure
+that every message has a `replyTo` address. That's why we have 
+placed `replyTo` in the `Message` trait.
 
 ![image](images/Messages.png)
 
-Source: [Message.scala](/src/main/scala/com/example/Message.scala)
-
-## Akka Output Responses
+Finally, we need to create a similar set of ADTs for responses and
+make sure that `Unhandled` response extends from all other response
+ADTs because we need the ability to return `Unhandled` response
+from all states.
 
 ![image](images/Responses.png)
-
-Source: [Message.scala](/src/main/scala/com/example/Message.scala)
-
-## Pattern
-
-The pattern requires us to come up with a list of states. Each state will have a corresponding akka `behavior`.
-In order to prevent `ask pattern` from timing out, when a message is not handled, we need to ensure that every message
-has a `replyTo` address. That's why we have placed `replyTo` in the `Message` trait.
-
-The pattern requires that we create an ADT for every state of the state machine. Since we are using typed-actors, we can then use `Behavior.receive[ADT]`.
-This allows us to ensure that we handle all messages which are applicable to state of machine. If any message is missed, a compiler warning is generated.
-
-Finally, we need to create a similar set of ADTs for responses and make sure that `Unhandled` response extends from all other response ADS because we
-need the ability to return `Unhandled` response from all states
 
 ## Motivation
 
