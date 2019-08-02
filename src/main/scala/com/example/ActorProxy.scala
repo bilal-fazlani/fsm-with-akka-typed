@@ -10,6 +10,6 @@ import com.example.Message.WriteBehaviorMessage.Save
 import scala.concurrent.Future
 
 class ActorProxy(actorRef: ActorRef[Message])(implicit timeout: Timeout, scheduler: Scheduler) {
-  def read: Future[ReadResponse] = actorRef.ask(Read)
-  def write(data: String): Future[SaveResponse] = actorRef.ask(Save(_, data))
+  def read: Future[ReadResponse]                = actorRef ? Read
+  def write(data: String): Future[SaveResponse] = actorRef ? Save(data)
 }
