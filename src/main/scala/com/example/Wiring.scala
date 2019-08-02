@@ -12,12 +12,10 @@ import scala.concurrent.Future
 import scala.concurrent.duration.DurationLong
 
 object Wiring {
-  implicit lazy val timeout: Timeout = Timeout(5.seconds)
-  implicit lazy val system: ActorSystem[Message[Response]] =
-    ActorSystem(Behaviors.empty, "system")
-  implicit lazy val untypedSystem: actor.ActorSystem = system.toUntyped
-  implicit lazy val mat: ActorMaterializer = ActorMaterializer()
-  implicit lazy val sch: Scheduler = system.scheduler
-  implicit lazy val actorRef: Future[ActorRef[Message[Response]]] =
-    system.systemActorOf(Actors.write(""), "actor1")
+  implicit lazy val timeout: Timeout                    = Timeout(5.seconds)
+  implicit lazy val system: ActorSystem[Message]        = ActorSystem(Behaviors.empty, "system")
+  implicit lazy val untypedSystem: actor.ActorSystem    = system.toUntyped
+  implicit lazy val mat: ActorMaterializer              = ActorMaterializer()
+  implicit lazy val sch: Scheduler                      = system.scheduler
+  implicit lazy val actorRef: Future[ActorRef[Message]] = system.systemActorOf(Actors.write(""), "actor1")
 }
