@@ -9,8 +9,8 @@ import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
 object Actors {
-  def read(state: String): Behavior[Message[Response]] = {
-    Behaviors.receiveMessage[Message[Response]] {
+  def read(state: String): Behavior[Message] = {
+    Behaviors.receiveMessage[Message] {
       case m: WriteBehaviorMessage =>
         m.replyTo ! Unhandled
         Behaviors.same
@@ -20,8 +20,8 @@ object Actors {
     }
   }
 
-  def write(state: String): Behavior[Message[Response]] = {
-    Behaviors.receiveMessage[Message[Response]] {
+  def write(state: String): Behavior[Message] = {
+    Behaviors.receiveMessage[Message] {
       case m: ReadBehaviorMessage =>
         m.replyTo ! Unhandled
         Behaviors.same
