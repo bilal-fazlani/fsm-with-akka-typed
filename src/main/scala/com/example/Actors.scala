@@ -1,14 +1,14 @@
 package com.example
 
-import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
+import akka.actor.typed.{ActorRef, Behavior}
 import com.example.Message.ReadBehaviorMessage.Read
 import com.example.Message.WriteBehaviorMessage.{Clear, Save}
-import com.example.Message.{ReadBehaviorMessage, WriteBehaviorMessage}
 import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
 import scala.reflect.ClassTag
+
 
 object Actors {
   def read(state: String): Behavior[Message] = myReceive[ReadBehaviorMessage] {

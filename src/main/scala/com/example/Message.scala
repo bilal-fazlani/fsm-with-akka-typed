@@ -2,6 +2,7 @@ package com.example
 
 import akka.actor.typed.ActorRef
 
+
 sealed trait Message {
   type T >: Unhandled.type
   def replyTo: ActorRef[T]
@@ -19,6 +20,7 @@ object Message {
   sealed trait ReadBehaviorMessage extends Message {
     type T = ReadResponse
   }
+
   object ReadBehaviorMessage {
     case class Read(replyTo: ActorRef[ReadResponse]) extends ReadBehaviorMessage
   }

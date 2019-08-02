@@ -4,7 +4,7 @@ import akka.actor
 import akka.actor.Scheduler
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter.TypedActorSystemOps
-import akka.actor.typed.{ActorRef, ActorSystem}
+import akka.actor.typed.{ ActorRef, ActorSystem }
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
 
