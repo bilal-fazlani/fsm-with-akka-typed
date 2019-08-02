@@ -2,9 +2,9 @@ package com.example
 
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
-import com.example.Message.{ ReadBehaviorMessage, WriteBehaviorMessage }
+import com.example.Message.{ReadBehaviorMessage, WriteBehaviorMessage}
 import com.example.Message.ReadBehaviorMessage.Read
-import com.example.Message.WriteBehaviorMessage.{ Clear, Save }
+import com.example.Message.WriteBehaviorMessage.{Clear, Save}
 import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
@@ -32,7 +32,7 @@ object Actors {
   }
 
   private def myReceive[B <: Message: ClassTag](f: B => Behavior[Message]): Behavior[Message] = Behaviors.receiveMessage {
-    case x: B => f(x)
-    case x => unhandled(x)
+    case m: B => f(m)
+    case m    => unhandled(m)
   }
 }
