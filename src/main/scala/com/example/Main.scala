@@ -4,7 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 object Main extends App with Directives with Routes {
 

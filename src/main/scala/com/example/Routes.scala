@@ -42,7 +42,8 @@ trait Routes extends Directives {
             complete(HttpResponse(StatusCodes.BadRequest))
           case Failure(exception) => throw exception
         }
-      } ~ (post & parameter('data)) { data =>
+      } ~
+      (post & parameter('data)) { data =>
         onComplete(proxy.write(data)) {
           case Success(Ok) => complete("")
           case Success(Unhandled) =>
