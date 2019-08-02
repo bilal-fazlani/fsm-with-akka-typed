@@ -6,7 +6,10 @@ import akka.http.scaladsl.model.HttpEntity.Strict
 import akka.http.scaladsl.model.{ContentTypes, HttpResponse, StatusCodes}
 import akka.http.scaladsl.server.{Directives, ExceptionHandler, Route}
 import akka.util.ByteString
+import com.example.ReadResponse.Data
+import com.example.SaveResponse.Ok
 
+import scala.util.Success
 import scala.util.control.NonFatal
 
 trait Routes extends Directives {
@@ -33,10 +36,16 @@ trait Routes extends Directives {
   def makeRoutes(proxy: ActorProxy): Route = {
     handleExceptions(exceptionHandler) {
       get {
-        complete(proxy.read)
-      } ~ post {
-        parameter('data) { data =>
-          complete(proxy.write(data))
+        onComplete(proxy.read) {
+          case Success(Data(value)) => complete(value)
+          case Success(Unhandled) =>
+            complete(HttpResponse(StatusCodes.BadRequest))
+        }
+      } ~ (post & parameter('data)) { data =>
+        onComplete(proxy.write(data)) {
+          case Success(Ok) => complete("")
+          case Success(Unhandled) =>
+            complete(HttpResponse(StatusCodes.BadRequest))
         }
       }
     }

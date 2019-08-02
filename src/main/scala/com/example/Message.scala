@@ -1,6 +1,5 @@
 package com.example
 
-import akka.Done
 import akka.actor.typed.ActorRef
 
 sealed trait Message {
@@ -11,9 +10,10 @@ object Message {
   sealed trait AdminMessage extends Message
 
   object AdminMessage {
-    case class Save(replyTo: ActorRef[Done], value: String) extends AdminMessage
+    case class Save(replyTo: ActorRef[SaveResponse], value: String)
+        extends AdminMessage
     object Save {
-      def apply(value: String)(replyTo: ActorRef[Done]): Save =
+      def apply(value: String)(replyTo: ActorRef[SaveResponse]): Save =
         new Save(replyTo, value)
     }
   }
@@ -21,7 +21,19 @@ object Message {
   sealed trait ClientMessage extends Message
 
   object ClientMessage {
-    case class Read(replyTo: ActorRef[String]) extends ClientMessage
+    case class Read(replyTo: ActorRef[ReadResponse]) extends ClientMessage
   }
 
+}
+
+sealed trait SaveResponse
+sealed trait ReadResponse
+case object Unhandled extends SaveResponse with ReadResponse
+
+object SaveResponse {
+  case object Ok extends SaveResponse
+}
+
+object ReadResponse {
+  case class Data(value: String) extends ReadResponse
 }
