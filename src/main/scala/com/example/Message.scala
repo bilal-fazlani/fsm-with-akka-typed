@@ -7,14 +7,17 @@ sealed trait Message[+T <: Response] {
 }
 
 object Message {
-
-  sealed trait WriteBehaviorMessage extends Message[SaveResponse]
+  sealed trait WriteBehaviorMessage extends Message[SaveResponse] {
+    override def replyTo: ActorRef[SaveResponse]
+  }
   object WriteBehaviorMessage {
     case class Save(replyTo: ActorRef[SaveResponse], value: String) extends WriteBehaviorMessage
     case class Clear(replyTo: ActorRef[SaveResponse]) extends WriteBehaviorMessage
   }
 
-  sealed trait ReadBehaviorMessage extends Message[ReadResponse]
+  sealed trait ReadBehaviorMessage extends Message[ReadResponse] {
+    override def replyTo: ActorRef[ReadResponse]
+  }
   object ReadBehaviorMessage {
     case class Read(replyTo: ActorRef[ReadResponse]) extends ReadBehaviorMessage
   }
