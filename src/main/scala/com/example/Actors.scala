@@ -8,28 +8,25 @@ import com.example.ReadResponse.Data
 import com.example.SaveResponse.Ok
 
 object Actors {
-  def read(state: String): Behavior[Message] = {
-    Behaviors.receiveMessage[Message] {
-      case Read(replyTo) =>
-        replyTo ! Data(state)
-        write(state)
-      case m =>
-        m.replyTo ! Unhandled
-        Behaviors.same
-    }
+  def read(state: String): Behavior[Message] = Behaviors.receiveMessage {
+    case Read(replyTo) =>
+      replyTo ! Data(state)
+      write(state)
+    case m => unhandled(m)
   }
 
-  def write(state: String): Behavior[Message] = {
-    Behaviors.receiveMessage[Message] {
-      case Save(replyTo, value) =>
-        replyTo ! Ok
-        read(value)
-      case Clear(replyTo) =>
-        replyTo ! Ok
-        read("")
-      case m =>
-        m.replyTo ! Unhandled
-        Behaviors.same
-    }
+  def write(state: String): Behavior[Message] = Behaviors.receiveMessage {
+    case Save(replyTo, value) =>
+      replyTo ! Ok
+      read(value)
+    case Clear(replyTo) =>
+      replyTo ! Ok
+      read("")
+    case m => unhandled(m)
+  }
+
+  def unhandled(m: Message): Behavior[Message] = {
+    m.replyTo ! Unhandled
+    Behaviors.same
   }
 }
