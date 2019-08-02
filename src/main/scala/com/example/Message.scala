@@ -3,7 +3,7 @@ package com.example
 import akka.actor.typed.ActorRef
 
 sealed trait Message {
-  type T <: Response
+  type T >: Unhandled.type
   def replyTo: ActorRef[T]
 }
 
