@@ -3,14 +3,11 @@ package com.example
 import akka.actor.typed.ActorRef
 
 sealed trait Message {
-  type T >: Unhandled.type <: Response
-  def replyTo: ActorRef[T]
+  def replyTo: ActorRef[Unhandled.type]
 }
 
 object Message {
-  sealed trait WriteBehaviorMessage extends Message {
-    type T = WriteBehaviorResponse
-  }
+  sealed trait WriteBehaviorMessage extends Message
   object WriteBehaviorMessage {
     case class Save(replyTo: ActorRef[WriteBehaviorResponse], value: String) extends WriteBehaviorMessage
     object Save {
@@ -19,9 +16,7 @@ object Message {
     case class Clear(replyTo: ActorRef[WriteBehaviorResponse]) extends WriteBehaviorMessage
   }
 
-  sealed trait ReadBehaviorMessage extends Message {
-    type T = ReadBehaviorResponse
-  }
+  sealed trait ReadBehaviorMessage extends Message
   object ReadBehaviorMessage {
     case class Read(replyTo: ActorRef[ReadBehaviorResponse]) extends ReadBehaviorMessage
   }
