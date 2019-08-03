@@ -43,7 +43,7 @@ trait Routes extends Directives {
           case Failure(exception) => throw exception
         }
       } ~
-      (post & parameter('data)) { data =>
+      (post & parameter("data")) { data =>
         onComplete(proxy.write(data)) {
           case Success(Ok) => complete("")
           case Success(Unhandled) =>
