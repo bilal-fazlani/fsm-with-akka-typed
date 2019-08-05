@@ -22,7 +22,7 @@ trait Routes extends Directives {
       }
     } ~
     (post & parameter("data")) { data =>
-      onSuccess(proxy.write(data)) {
+      onSuccess(proxy.save(data)) {
         case Ok        => complete("")
         case Unhandled => complete(StatusCodes.BadRequest -> "")
       }
