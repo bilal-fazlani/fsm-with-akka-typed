@@ -5,8 +5,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import com.example.Message.ReadBehaviorMessage.Read
 import com.example.Message.WriteBehaviorMessage.{Clear, Save}
 import com.example.Message.{ReadBehaviorMessage, WriteBehaviorMessage}
-import com.example.ReadBehaviorResponse.Data
-import com.example.WriteBehaviorResponse.Ok
+import com.example.Response.{Data, Ok, Unhandled}
 
 import scala.reflect.ClassTag
 
@@ -15,6 +14,9 @@ object Actors {
     case Read(replyTo) =>
       replyTo ! Data(state)
       write(state)
+    case Clear(replyTo) =>
+      replyTo ! Ok
+      read("")
   }
 
   def write(state: String): Behavior[Message] = myReceive[WriteBehaviorMessage] {

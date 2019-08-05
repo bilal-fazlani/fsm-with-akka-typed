@@ -4,8 +4,7 @@ import java.util.concurrent.TimeoutException
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.{Directives, ExceptionHandler, Route}
-import com.example.ReadBehaviorResponse.Data
-import com.example.WriteBehaviorResponse.Ok
+import com.example.Response.{Data, Ok, Unhandled}
 
 import scala.util.control.NonFatal
 
