@@ -5,3 +5,7 @@ POST http://localhost:8080/?data=pqr
 GET http://localhost:8080/
 
 ###
+
+DELETE http://localhost:8080/
+
+###

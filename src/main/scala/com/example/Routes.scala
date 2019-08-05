@@ -17,14 +17,20 @@ trait Routes extends Directives {
   def makeRoutes(proxy: ActorProxy): Route = handleExceptions(exceptionHandler) {
     get {
       onSuccess(proxy.read) {
-        case Data(value) => complete(value)
-        case Unhandled   => complete(StatusCodes.BadRequest -> "")
+        case Data(value)  => complete(value)
+        case x: Unhandled => complete(StatusCodes.BadRequest -> x.description)
+      }
+    } ~
+    delete {
+      onSuccess(proxy.clear) {
+        case Ok           => complete("")
+        case x: Unhandled => complete(StatusCodes.BadRequest -> x.description)
       }
     } ~
     (post & parameter("data")) { data =>
       onSuccess(proxy.save(data)) {
-        case Ok        => complete("")
-        case Unhandled => complete(StatusCodes.BadRequest -> "")
+        case Ok           => complete("")
+        case x: Unhandled => complete(StatusCodes.BadRequest -> x.description)
       }
     }
   }

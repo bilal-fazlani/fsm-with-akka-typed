@@ -10,7 +10,7 @@ import com.example.Response.{Data, Ok, Unhandled}
 import scala.reflect.ClassTag
 
 object Actors {
-  def read(state: String): Behavior[Message] = myReceive[ReadBehaviorMessage] {
+  def read(state: String): Behavior[Message] = myReceive[ReadBehaviorMessage]("read") {
     case Read(replyTo) =>
       replyTo ! Data(state)
       write(state)
@@ -19,7 +19,7 @@ object Actors {
       read("")
   }
 
-  def write(state: String): Behavior[Message] = myReceive[WriteBehaviorMessage] {
+  def write(state: String): Behavior[Message] = myReceive[WriteBehaviorMessage]("write") {
     case Save(replyTo, value) =>
       replyTo ! Ok
       read(value)
@@ -28,13 +28,11 @@ object Actors {
       read("")
   }
 
-  private def unhandled(m: Message): Behavior[Message] = {
-    m.replyTo ! Unhandled
-    Behaviors.same
-  }
-
-  private def myReceive[B <: Message: ClassTag](f: B => Behavior[Message]): Behavior[Message] = Behaviors.receiveMessage {
-    case m: B => f(m)
-    case m    => unhandled(m)
-  }
+  private def myReceive[B <: Message: ClassTag](stateName: String)(f: B => Behavior[Message]): Behavior[Message] =
+    Behaviors.receiveMessage {
+      case m: B => f(m)
+      case m =>
+        m.replyTo ! Unhandled(stateName, m.getClass.getSimpleName)
+        Behaviors.same
+    }
 }

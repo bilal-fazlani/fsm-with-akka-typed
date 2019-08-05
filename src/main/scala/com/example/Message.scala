@@ -4,7 +4,7 @@ import akka.actor.typed.ActorRef
 import com.example.Response.Unhandled
 
 sealed trait Message {
-  def replyTo: ActorRef[Unhandled.type]
+  def replyTo: ActorRef[Unhandled]
 }
 
 object Message {
