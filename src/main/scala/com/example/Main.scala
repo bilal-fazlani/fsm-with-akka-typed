@@ -13,16 +13,18 @@ object Main extends App with Directives with Routes {
 
   import Wiring._
 
-  val f = for {
-    ref    <- actorRef
-    _      = println("actor started")
-    proxy  = new ActorProxy(ref)
-    routes = makeRoutes(proxy)
-    _      <- Http().bindAndHandle(routes, interface, port)
-    _      = println(s"http server started at $interface:$port")
-  } yield ()
+  val ref = actorRef
+  println("actor started")
+  val proxy  = new ActorProxy(ref)
+  val routes = makeRoutes(proxy)
+  val bindingF = Http()
+    .bindAndHandle(routes, interface, port)
+    .map(binding => {
+      println(s"http server started at $interface:$port")
+      binding
+    })
 
-  f.onComplete {
+  bindingF.onComplete {
     case Failure(exception) =>
       exception.printStackTrace()
       system.terminate()
