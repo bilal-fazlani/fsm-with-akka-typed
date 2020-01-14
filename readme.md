@@ -1,14 +1,31 @@
 # Finite State Machines with Akka Typed Actors
 
+## Running Instructions
+
+```sh
+sbt run
+```
+
+This will start an HTTP server on port 8080
+
 ## Introduction
 
-This project uses akka-http server to expose two endpoints
+This project uses akka-http server to expose three endpoints. Checkout the [test.http](src/main/scala/com/example/test.http) file
+
+### Writing data
 
 ```http request
 POST http://localhost:8080/?data=<STRING>
 ``` 
 
 This endpoint accepts a query parameter named `data` and stores it in memory
+
+```http request
+DELETE http://localhost:8080/
+``` 
+This endpoint deletes data from memory
+
+### Reading data
 
 ```http request
 GET http://localhost:8080/
@@ -19,7 +36,7 @@ This endpoint returns previously stored string data
 The way it's designed, you can alternatively send requests. i.e.
 Once you post some data to the server, the server goes into `readonly` mode. In this
 mode, you can only make a get request. If you attempt to post again, it will
-return BAD REQUEST. Once you read the data, it will then again go into `writeonly` mode.
+return BAD REQUEST. Once you read the data, it will then again go into `writeonly` mode. In the writeonly mode, you can either post or delete the data.
 
 To achieve this functionality, akka-typed actors are used.
 
