@@ -12,11 +12,11 @@ This will start an Akka HTTP server on port 8080
 
 This project uses akka-http server to expose three endpoints. Checkout the [test.http](src/main/scala/com/example/test.http) file
 
-|Endpoint|Akka Message| Description|
-|-|-|-|
-|`POST http://localhost:8080/?data=<STRING>`|`Save(replyTo, data)`|Accepts a query parameter named `data` and stores it in memory|
-|`GET http://localhost:8080/`|`Read(replyTo)`|Returns previously stored data|
-|`DELETE http://localhost:8080/`|`Clear(replyTo)`|Deletes saved data from memory|
+|Endpoint|Akka Message|Description|Allowed in|Next state|
+|-|-|-|-|-|
+|`POST /?data=<STRING>`|`Save(replyTo, data)`|Accepts a query parameter named `data` and stores it in memory|writeonly|readonly|
+|`GET /`|`Read(replyTo)`|Returns previously stored data|readonly|writeonly|
+|`DELETE /`|`Clear(replyTo)`|Deletes saved data from memory|both|same as before|
 
 Note: type of `data` is always `String`
 
@@ -55,7 +55,6 @@ Finally, we need to create a similar set of ADTs for responses and
 make sure that `Unhandled` response extends from all other response
 ADTs because we need the ability to return `Unhandled` response
 from all states.
-
 
 <div align="center">
   <img width="80%" src="images/Responses.png">
