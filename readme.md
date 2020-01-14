@@ -34,7 +34,9 @@ To achieve this functionality, we have created a finite state machine using akka
 The pattern requires us to come up with a list of states.
 Each state will have a corresponding akka `behavior`.
 
-![image](images/Behaviors.png)
+<div align="center">
+  <img width="80%" src="images/Behaviors.png">
+</div>
 
 In addition, the pattern requires that we create an ADT of messages for every
 state of the state machine. Since we are using typed-actors,
@@ -45,14 +47,19 @@ from timing out, when a message is not handled, we need to ensure
 that every message has a `replyTo` address. That's why we have 
 placed `replyTo` in the `Message` trait.
 
-![image](images/Messages.png)
+<div align="center">
+  <img width="80%" src="images/Messages.png">
+</div>
 
 Finally, we need to create a similar set of ADTs for responses and
 make sure that `Unhandled` response extends from all other response
 ADTs because we need the ability to return `Unhandled` response
 from all states.
 
-![image](images/Responses.png)
+
+<div align="center">
+  <img width="80%" src="images/Responses.png">
+</div>
 
 ## Motivation
 
