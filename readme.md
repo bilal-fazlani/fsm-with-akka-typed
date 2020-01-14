@@ -6,7 +6,7 @@
 sbt run
 ```
 
-This will start an Akka HTTP server on port 8080
+This will start an Akka HTTP server on [`http://localhost:8080/`](http://localhost:8080/)
 
 ## Endpoints
 
