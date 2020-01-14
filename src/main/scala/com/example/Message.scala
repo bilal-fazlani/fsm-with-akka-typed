@@ -1,7 +1,6 @@
 package com.example
 
 import akka.actor.typed.ActorRef
-import com.example.Response.Unhandled
 
 sealed trait Message {
   def replyTo: ActorRef[Unhandled]

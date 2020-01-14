@@ -5,7 +5,6 @@ import akka.actor.typed.scaladsl.Behaviors
 import com.example.Message.ReadBehaviorMessage.Read
 import com.example.Message.WriteBehaviorMessage.{Clear, Save}
 import com.example.Message.{ReadBehaviorMessage, WriteBehaviorMessage}
-import com.example.Response.{Data, Ok, Unhandled}
 
 import scala.reflect.ClassTag
 
