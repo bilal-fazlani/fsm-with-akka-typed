@@ -16,18 +16,13 @@ inThisBuild(
 
 lazy val akkaHttpVersion = "10.1.11"
 lazy val akkaVersion     = "2.6.1"
+val akkaOrg              = "com.typesafe.akka"
 
 lazy val root = (project in file(".")).settings(
   name := "actor_reply",
   libraryDependencies ++= Seq(
-    "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-http-xml"        % akkaHttpVersion,
-    "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
-    "com.typesafe.akka" %% "akka-actor-typed"     % akkaVersion,
-    "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
-    "com.typesafe.akka" %% "akka-testkit"         % akkaVersion % Test,
-    "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion % Test,
-    "org.scalatest"     %% "scalatest"            % "3.0.8" % Test
+    akkaOrg %% "akka-http"        % akkaHttpVersion,
+    akkaOrg %% "akka-stream"      % akkaVersion,
+    akkaOrg %% "akka-actor-typed" % akkaVersion
   )
 )
