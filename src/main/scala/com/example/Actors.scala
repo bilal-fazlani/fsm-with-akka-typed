@@ -20,9 +20,9 @@ object Actors {
   }
 
   def write(state: String): Behavior[Message] = myReceive[WriteBehaviorMessage]("write") {
-    case Save(replyTo, value) =>
+    case Save(replyTo, data) =>
       replyTo ! Ok
-      read(value)
+      read(data)
     case Clear(replyTo) =>
       replyTo ! Ok
       read("")
